@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ivory: #F7F3EC;
+  --color-charcoal: #2B2A28;
+  --color-champagne: #B8935F;
+  --color-taupe: #C9C2B4;
+
+  --font-serif: var(--font-cormorant), serif;
+  --font-sans: var(--font-jost), sans-serif;
+}
