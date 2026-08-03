@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import LogoutButton from '@/components/LogoutButton'
-import StatusPill from '@/components/StatusPill'
-import Link from 'next/link'
+import DashboardView from '@/components/DashboardView'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -29,30 +28,7 @@ export default async function DashboardPage() {
         </p>
       )}
 
-      <div className="flex flex-col gap-3">
-{inquiries?.map((inquiry) => (
-  <Link
-    key={inquiry.id}
-    href={`/dashboard/${inquiry.id}`}
-    className="border border-taupe/50 rounded-lg p-4 flex items-center justify-between bg-white/40 hover:bg-white/70 transition"
-  >
-    <div>
-      <p className="font-serif text-lg text-charcoal">
-        {inquiry.first_name} {inquiry.last_name}
-      </p>
-      <p className="font-sans text-sm text-taupe">
-        {inquiry.event_type} · {inquiry.event_date}
-      </p>
-    </div>
-
-    <StatusPill status={inquiry.status} />
-  </Link>
-))}
-      </div>
-
-      {inquiries?.length === 0 && (
-        <p className="font-sans text-taupe">No inquiries yet.</p>
-      )}
+      {inquiries && <DashboardView inquiries={inquiries} />}
     </main>
   )
 }

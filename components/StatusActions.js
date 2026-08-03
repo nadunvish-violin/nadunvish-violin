@@ -4,9 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
+const EVENT_TIME_OPTIONS = ['morning', 'noon', 'afternoon', 'evening']
+
 export default function StatusActions({ inquiry }) {
   const [loading, setLoading] = useState(false)
-  const [activeForm, setActiveForm] = useState(null) // null | 'confirm' | 'cancel'
+  const [activeForm, setActiveForm] = useState(null) // null | 'contact' | 'confirm' | 'cancel'
+  const [eventTime, setEventTime] = useState('')
   const [advanceAmount, setAdvanceAmount] = useState('')
   const [advanceDate, setAdvanceDate] = useState('')
   const [cancellationReason, setCancellationReason] = useState('')
@@ -29,8 +32,9 @@ export default function StatusActions({ inquiry }) {
     router.refresh()
   }
 
-  async function markContacted() {
-    await updateInquiry({ status: 'contacted' })
+  async function markContacted(e) {
+    e.preventDefault()
+    await updateInquiry({ status: 'contacted', event_time: eventTime })
   }
 
   async function markConfirmed(e) {
@@ -92,13 +96,49 @@ export default function StatusActions({ inquiry }) {
   )
 
   if (inquiry.status === 'new') {
+    if (activeForm === 'contact') {
+      return (
+        <form onSubmit={markContacted} className="flex flex-col gap-3 max-w-sm">
+          <label className="font-sans text-sm text-charcoal">
+            Event time
+            <select
+              required
+              value={eventTime}
+              onChange={(e) => setEventTime(e.target.value)}
+              className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"
+            >
+              <option value="" disabled>Select a time</option>
+              {EVENT_TIME_OPTIONS.map((option) => (
+                <option key={option} value={option} className="capitalize">{option}</option>
+              ))}
+            </select>
+          </label>
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-champagne text-ivory px-6 py-2 rounded font-sans disabled:opacity-50"
+            >
+              {loading ? 'Saving...' : 'Confirm'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveForm(null)}
+              className="border border-taupe text-charcoal px-6 py-2 rounded font-sans"
+            >
+              Back
+            </button>
+          </div>
+        </form>
+      )
+    }
+
     return (
       <button
-        onClick={markContacted}
-        disabled={loading}
-        className="bg-champagne text-ivory px-6 py-2 rounded font-sans disabled:opacity-50"
+        onClick={() => setActiveForm('contact')}
+        className="bg-champagne text-ivory px-6 py-2 rounded font-sans"
       >
-        {loading ? 'Updating...' : 'Mark as Contacted'}
+        Mark as Contacted
       </button>
     )
   }
