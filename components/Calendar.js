@@ -131,17 +131,7 @@ export default function Calendar({ inquiries }) {
               {dayInquiries.length > 0 && (
                 <div className="flex gap-0.5 flex-wrap justify-center mt-1">
                   {dayInquiries.map((inq) => (
-                    <button
-                      key={inq.id}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        goToInquiry(inq.id)
-                      }}
-                      className="p-1 -m-0.5"
-                      aria-label={`Go to ${inq.first_name} ${inq.last_name}`}
-                    >
-                      <span className={`block w-2.5 h-2.5 rounded-full ${STATUS_DOT_COLORS[inq.status]}`} />
-                    </button>
+                    <span key={inq.id} className={`w-2 h-2 rounded-full ${STATUS_DOT_COLORS[inq.status]}`} />
                   ))}
                 </div>
               )}

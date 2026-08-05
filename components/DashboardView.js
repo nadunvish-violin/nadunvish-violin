@@ -30,12 +30,12 @@ export default function DashboardView({ inquiries }) {
 
   return (
     <div>
-      {/* View toggle + Add Inquiry */}
-      <div className="flex items-center justify-between mb-6">
+      {/* View toggle + Add Inquiry — stacked on mobile, side by side from sm breakpoint up */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex gap-2">
           <button
             onClick={() => setView('list')}
-            className={`px-4 py-2 rounded font-sans text-sm ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded font-sans text-sm ${
               view === 'list' ? 'bg-champagne text-ivory' : 'border border-taupe text-charcoal'
             }`}
           >
@@ -43,7 +43,7 @@ export default function DashboardView({ inquiries }) {
           </button>
           <button
             onClick={() => setView('calendar')}
-            className={`px-4 py-2 rounded font-sans text-sm ${
+            className={`flex-1 sm:flex-none px-4 py-2 rounded font-sans text-sm ${
               view === 'calendar' ? 'bg-champagne text-ivory' : 'border border-taupe text-charcoal'
             }`}
           >
@@ -53,7 +53,7 @@ export default function DashboardView({ inquiries }) {
 
         <Link
           href="/dashboard/new"
-          className="bg-champagne text-ivory px-4 py-2 rounded font-sans text-sm"
+          className="bg-champagne text-ivory px-4 py-2 rounded font-sans text-sm text-center"
         >
           + Add Inquiry
         </Link>

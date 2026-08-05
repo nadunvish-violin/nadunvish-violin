@@ -25,17 +25,17 @@ export default async function InquiryDetailPage({ params, searchParams }) {
 
   if (error || !inquiry) {
     return (
-      <main className="min-h-screen bg-ivory p-8">
+      <div>
         <p className="font-sans text-red-600">Inquiry not found.</p>
         <Link href={backHref} className="font-sans text-champagne underline">
           Back
         </Link>
-      </main>
+      </div>
     )
   }
 
   return (
-    <main className="min-h-screen bg-ivory p-8">
+    <div>
       <Link href={backHref} className="font-sans text-taupe text-sm">
         ← Back
       </Link>
@@ -64,6 +64,6 @@ export default async function InquiryDetailPage({ params, searchParams }) {
       <div className="mt-8">
         <StatusActions inquiry={inquiry} />
       </div>
-    </main>
+    </div>
   )
 }

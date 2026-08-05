@@ -64,7 +64,7 @@ export default function NewInquiryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-ivory p-8">
+    <div>
       <Link href="/dashboard?view=list" className="font-sans text-taupe text-sm">
         ← Back
       </Link>
@@ -200,6 +200,6 @@ export default function NewInquiryPage() {
           {loading ? 'Adding...' : 'Add Inquiry'}
         </button>
       </form>
-    </main>
+    </div>
   )
 }
