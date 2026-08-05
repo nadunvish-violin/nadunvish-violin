@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-const EVENT_TIME_OPTIONS = ['morning', 'noon', 'afternoon', 'evening']
-
 export default function NewInquiryPage() {
   const router = useRouter()
   const supabase = createClient()
@@ -176,17 +174,13 @@ export default function NewInquiryPage() {
         {startingStatus === 'contacted' && (
           <label className="font-sans text-sm text-charcoal">
             Event time
-            <select
+            <input
+              type="time"
               required
               value={eventTime}
               onChange={(e) => setEventTime(e.target.value)}
               className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"
-            >
-              <option value="" disabled>Select a time</option>
-              {EVENT_TIME_OPTIONS.map((option) => (
-                <option key={option} value={option} className="capitalize">{option}</option>
-              ))}
-            </select>
+            />
           </label>
         )}
 
