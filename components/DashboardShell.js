@@ -1,14 +1,39 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Sidebar from '@/components/Sidebar'
 
 export default function DashboardShell({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [headerVisible, setHeaderVisible] = useState(true)
+  const lastScrollY = useRef(0)
+
+  useEffect(() => {
+    function handleScroll() {
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY <= 0) {
+        setHeaderVisible(true)
+      } else if (currentScrollY > lastScrollY.current) {
+        setHeaderVisible(false)
+      } else {
+        setHeaderVisible(true)
+      }
+
+      lastScrollY.current = currentScrollY
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <div className="min-h-screen bg-ivory">
-      <header className="flex items-center gap-4 px-6 py-4 border-b border-taupe/30">
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 flex items-center gap-4 px-6 py-4 border-b border-taupe/30 bg-ivory transition-transform duration-300 ${
+          headerVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <button
           onClick={() => setSidebarOpen(true)}
           aria-label="Open menu"
@@ -25,7 +50,7 @@ export default function DashboardShell({ children }) {
 
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="p-8">
+      <main className="p-8 pt-24">
         {children}
       </main>
     </div>
