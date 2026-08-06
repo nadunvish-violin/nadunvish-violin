@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import StatusPill from '@/components/StatusPill'
 import StatusActions from '@/components/StatusActions'
 import ContactedPanel from '@/components/ContactedPanel'
+import ConfirmedPanel from '@/components/ConfirmedPanel'
 import Link from 'next/link'
 
 function formatTime(timeString) {
@@ -80,11 +81,9 @@ export default async function InquiryDetailPage({ params, searchParams }) {
         )}
       </div>
 
-      {inquiry.status === 'contacted' ? (
-        <ContactedPanel inquiry={inquiry} packages={packages} />
-      ) : (
-        <StatusActions inquiry={inquiry} />
-      )}
+      {inquiry.status === 'contacted' && <ContactedPanel inquiry={inquiry} packages={packages} />}
+      {inquiry.status === 'confirmed' && <ConfirmedPanel inquiry={inquiry} />}
+      {inquiry.status !== 'contacted' && inquiry.status !== 'confirmed' && <StatusActions inquiry={inquiry} />}
     </div>
   )
 }
