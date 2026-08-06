@@ -3,6 +3,7 @@ import StatusPill from '@/components/StatusPill'
 import StatusActions from '@/components/StatusActions'
 import ContactedPanel from '@/components/ContactedPanel'
 import ConfirmedPanel from '@/components/ConfirmedPanel'
+import CompletedPanel from '@/components/CompletedPanel'
 import Link from 'next/link'
 
 function formatTime(timeString) {
@@ -83,7 +84,8 @@ export default async function InquiryDetailPage({ params, searchParams }) {
 
       {inquiry.status === 'contacted' && <ContactedPanel inquiry={inquiry} packages={packages} />}
       {inquiry.status === 'confirmed' && <ConfirmedPanel inquiry={inquiry} />}
-      {inquiry.status !== 'contacted' && inquiry.status !== 'confirmed' && <StatusActions inquiry={inquiry} />}
+      {inquiry.status === 'completed' && <CompletedPanel inquiry={inquiry} />}
+      {!['contacted', 'confirmed', 'completed'].includes(inquiry.status) && <StatusActions inquiry={inquiry} />}
     </div>
   )
 }

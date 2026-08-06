@@ -37,7 +37,9 @@ export default async function InvoicePage({ params }) {
         ← Back
       </Link>
 
-      <h1 className="text-3xl font-serif text-charcoal mt-4 mb-8">Generate Invoice</h1>
+      <h1 className="text-3xl font-serif text-charcoal mt-4 mb-8">
+        {inquiry.status === 'completed' ? 'Generate Paid Invoice' : 'Generate Invoice'}
+      </h1>
 
       {!latestQuotation && (
         <p className="font-sans text-red-600 mb-4">

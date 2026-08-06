@@ -28,6 +28,8 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
   const router = useRouter()
   const supabase = createClient()
 
+  const isCompleted = inquiry.status === 'completed'
+
   const [firstName, setFirstName] = useState(inquiry.first_name)
   const [lastName, setLastName] = useState(inquiry.last_name)
   const [eventDate, setEventDate] = useState(inquiry.event_date || '')
@@ -39,7 +41,11 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
   const [packageDetails, setPackageDetails] = useState(inquiry.package_type || '')
   const [packagePrice, setPackagePrice] = useState(inquiry.total_price ?? '')
   const [discount, setDiscount] = useState(inquiry.discount ?? 0)
-  const [advancePayment, setAdvancePayment] = useState(inquiry.advance_payment_amount ?? 0)
+  const [advancePayment, setAdvancePayment] = useState(
+    isCompleted
+      ? Number(inquiry.total_price || 0) - Number(inquiry.discount || 0)
+      : inquiry.advance_payment_amount ?? 0
+  )
 
   const initialBankIds = banks
     .filter((b) => latestQuotation?.banks_shown?.includes(b.details))
@@ -156,30 +162,34 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
         <div>
           <h2 className="font-serif text-xl text-charcoal mb-3">Previous Invoices</h2>
           <div className="flex flex-col gap-2">
-            {pastInvoices.map((inv) => (
-              <div key={inv.id} className="border border-taupe/50 rounded-lg p-4 bg-white/40 flex items-center justify-between">
-                <div>
-                  <p className="font-sans text-charcoal">
-                    NV-INV-{String(inv.sequence_number).padStart(5, '0')} · {inv.invoice_date}
-                  </p>
-                  <p className="font-sans text-sm text-taupe">
-                    Balance: LKR {Number(inv.balance).toLocaleString()}
-                  </p>
+            {pastInvoices.map((inv) => {
+              const paidInFull = Number(inv.balance) === 0
+              return (
+                <div key={inv.id} className="border border-taupe/50 rounded-lg p-4 bg-white/40 flex items-center justify-between">
+                  <div>
+                    <p className="font-sans text-charcoal">
+                      NV-INV-{String(inv.sequence_number).padStart(5, '0')} · {inv.invoice_date}
+                      {paidInFull && <span className="text-champagne text-xs ml-2">(Paid in full)</span>}
+                    </p>
+                    <p className="font-sans text-sm text-taupe">
+                      Balance: LKR {Number(inv.balance).toLocaleString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleRedownload(inv)}
+                    className="border border-champagne text-champagne px-3 py-1 rounded font-sans text-sm"
+                  >
+                    Download PDF
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleRedownload(inv)}
-                  className="border border-champagne text-champagne px-3 py-1 rounded font-sans text-sm"
-                >
-                  Download PDF
-                </button>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
 
       <form onSubmit={handleGenerate} className="flex flex-col gap-4 max-w-md">
-        <h2 className="font-serif text-xl text-charcoal">New Invoice</h2>
+        <h2 className="font-serif text-xl text-charcoal">{isCompleted ? 'New Paid Invoice' : 'New Invoice'}</h2>
 
         <label className="font-sans text-sm text-charcoal">
           First name
@@ -242,7 +252,7 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
         </label>
 
         <label className="font-sans text-sm text-charcoal">
-          Advance payment received (LKR)
+          {isCompleted ? 'Total payment received (LKR)' : 'Advance payment received (LKR)'}
           <input type="number" step="0.01" value={advancePayment} onChange={(e) => setAdvancePayment(e.target.value)}
             className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1" />
         </label>
@@ -269,7 +279,7 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
 
         <button type="submit" disabled={generating}
           className="bg-champagne text-ivory px-6 py-2 rounded font-sans disabled:opacity-50 mt-2">
-          {generating ? 'Generating...' : 'Generate Invoice'}
+          {generating ? 'Generating...' : isCompleted ? 'Generate Paid Invoice' : 'Generate Invoice'}
         </button>
       </form>
     </div>
