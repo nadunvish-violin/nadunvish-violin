@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { normalizePhone } from '@/lib/formatPhone'
 
 export default function NewInquiryPage() {
   const router = useRouter()
@@ -32,7 +33,7 @@ export default function NewInquiryPage() {
       first_name: firstName,
       last_name: lastName,
       email,
-      phone,
+      phone: normalizePhone(phone),
       event_type: eventType,
       event_date: eventDate,
       venue,

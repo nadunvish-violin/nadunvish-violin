@@ -5,6 +5,7 @@ import ContactedPanel from '@/components/ContactedPanel'
 import ConfirmedPanel from '@/components/ConfirmedPanel'
 import CompletedPanel from '@/components/CompletedPanel'
 import Link from 'next/link'
+import PhoneActions from '@/components/PhoneActions'
 
 function formatTime(timeString) {
   if (!timeString) return null
@@ -70,7 +71,10 @@ export default async function InquiryDetailPage({ params, searchParams }) {
 
       <div className="flex flex-col gap-3 font-sans text-charcoal mb-8">
         <p><span className="text-taupe">Email:</span> {inquiry.email}</p>
-        <p><span className="text-taupe">Phone:</span> {inquiry.phone}</p>
+        <div className="flex items-baseline gap-1">
+          <span className="text-taupe">Phone:</span>
+          <PhoneActions phone={inquiry.phone} />
+        </div>
         <p><span className="text-taupe">Event type:</span> {inquiry.event_type}</p>
         <p><span className="text-taupe">Event date:</span> {inquiry.event_date}</p>
         <p><span className="text-taupe">Event time:</span> {formatTime(inquiry.event_time) || 'Not set yet'}</p>
