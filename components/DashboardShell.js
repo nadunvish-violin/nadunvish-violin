@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Sidebar from '@/components/Sidebar'
+import NotificationBell from '@/components/NotificationBell'
 
-export default function DashboardShell({ children }) {
+export default function DashboardShell({ children, notifications }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollY = useRef(0)
@@ -46,6 +47,7 @@ export default function DashboardShell({ children }) {
           </svg>
         </button>
         <span className="font-serif text-xl text-charcoal">NadunVish</span>
+        <NotificationBell notifications={notifications} />
       </header>
 
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
