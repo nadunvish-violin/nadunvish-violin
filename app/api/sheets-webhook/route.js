@@ -1,12 +1,13 @@
 import { google } from 'googleapis'
 
 function getAuth() {
-  return new google.auth.JWT(
-    process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    null,
-    process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    ['https://www.googleapis.com/auth/spreadsheets']
-  )
+  return new google.auth.GoogleAuth({
+    credentials: {
+      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    },
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  })
 }
 
 function buildRow(record) {
@@ -36,15 +37,6 @@ export async function POST(request) {
   if (secret !== process.env.SUPABASE_WEBHOOK_SECRET) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
-  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
-  console.log('DEBUG email:', email)
-  console.log('DEBUG email length:', email?.length)
-  console.log('DEBUG key length:', key?.length)
-  console.log('DEBUG key first 5 chars:', key?.slice(0, 5))
-  console.log('DEBUG key last 5 chars:', key?.slice(-5))
-  console.log('DEBUG key starts with a quote character:', key?.[0] === '"')
 
   const payload = await request.json()
   const record = payload.record
