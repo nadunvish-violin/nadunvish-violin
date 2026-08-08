@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateInvoicePDF } from '@/lib/generateInvoicePDF'
-import { saveToDrive } from '@/lib/saveToDrive'
 
 function formatTime(timeString) {
   if (!timeString) return ''
@@ -94,8 +93,6 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
       balance,
       banksShown,
     })
-
-    saveToDrive(pdfBytes, `${invoiceNumber}.pdf`)
 
     const { error: insertError } = await supabase.from('invoices').insert({
       inquiry_id: inquiry.id,
