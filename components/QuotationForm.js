@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateQuotationPDF } from '@/lib/generateQuotationPDF'
+import { saveToDrive } from '@/lib/saveToDrive'
 
 function formatTime(timeString) {
   if (!timeString) return ''
@@ -92,6 +93,8 @@ export default function QuotationForm({ inquiry, packages, banks, pastQuotations
       totalPrice: finalTotal,
       banksShown,
     })
+
+    saveToDrive(pdfBytes, `${quotationNumber}.pdf`)
 
     const { error: insertError } = await supabase.from('quotations').insert({
       inquiry_id: inquiry.id,

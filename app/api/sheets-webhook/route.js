@@ -1,14 +1,5 @@
 import { google } from 'googleapis'
-
-function getAuth() {
-  return new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, '\n'),
-    },
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  })
-}
+import { getGoogleAuth } from '@/lib/googleAuth'
 
 function buildRow(record) {
   return [
@@ -45,7 +36,7 @@ export async function POST(request) {
     return Response.json({ error: 'No record in payload' }, { status: 400 })
   }
 
-  const auth = getAuth()
+  const auth = getGoogleAuth(['https://www.googleapis.com/auth/spreadsheets'])
   const sheets = google.sheets({ version: 'v4', auth })
   const spreadsheetId = process.env.GOOGLE_SHEET_ID
 
