@@ -37,6 +37,15 @@ export async function POST(request) {
     return Response.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL
+  const key = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY
+  console.log('DEBUG email:', email)
+  console.log('DEBUG email length:', email?.length)
+  console.log('DEBUG key length:', key?.length)
+  console.log('DEBUG key first 5 chars:', key?.slice(0, 5))
+  console.log('DEBUG key last 5 chars:', key?.slice(-5))
+  console.log('DEBUG key starts with a quote character:', key?.[0] === '"')
+
   const payload = await request.json()
   const record = payload.record
 
