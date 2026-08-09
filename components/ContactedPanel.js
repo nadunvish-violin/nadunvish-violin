@@ -28,6 +28,11 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
   }
 
   async function saveChanges() {
+    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
+      alert('Please set the advance payment date before saving.')
+      return
+    }
+
     setSaving(true)
 
     const fields = {
