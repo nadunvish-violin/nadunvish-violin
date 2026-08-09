@@ -5,6 +5,10 @@ export default function CompletedPanel({ inquiry, invoices }) {
 
   return (
     <div className="flex flex-col gap-4 max-w-md">
+      <div className="rounded-lg p-3" style={{ background: 'linear-gradient(135deg, rgba(2,48,71,0.15), transparent)' }}>
+        <p className="font-sans text-xs text-charcoal uppercase tracking-wide">Currently: Completed</p>
+      </div>
+
       <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
         <p className="font-sans text-sm text-taupe">Event completed</p>
         <p className="font-serif text-lg text-charcoal">

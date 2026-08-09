@@ -6,6 +6,20 @@
   --color-champagne: #B8935F;
   --color-taupe: #C9C2B4;
 
+  --color-status-new: #fcc055;
+  --color-status-contacted: #9683ec;
+  --color-status-confirmed: #23aa8f;
+  --color-status-completed: #023047;
+  --color-inquiry-cta: #ea7217;
+
   --font-serif: var(--font-cormorant), serif;
   --font-sans: var(--font-jost), sans-serif;
+}
+
+input, select, textarea {
+  font-size: 16px;
+}
+
+button.rounded, a.rounded {
+  border-radius: 9999px;
 }

@@ -1,9 +1,9 @@
 const STATUS_STYLES = {
-  new: 'bg-yellow-100 text-yellow-700',
-  contacted: 'bg-blue-100 text-blue-700',
-  confirmed: 'bg-champagne/30 text-champagne',
-  completed: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
+  new: 'bg-status-new text-charcoal',
+  contacted: 'bg-status-contacted text-ivory',
+  confirmed: 'bg-status-confirmed text-ivory',
+  completed: 'bg-status-completed text-ivory',
+  cancelled: 'bg-red-600 text-ivory',
 }
 
 const STATUS_LABELS = {

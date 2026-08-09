@@ -8,11 +8,19 @@ import Calendar from '@/components/Calendar'
 
 const STATUS_FILTERS = ['all', 'new', 'contacted', 'confirmed', 'completed', 'cancelled']
 
+const STATUS_COLORS = {
+  new: '#fcc055',
+  contacted: '#9683ec',
+  confirmed: '#23aa8f',
+  completed: '#023047',
+  cancelled: '#dc2626',
+}
+
 export default function DashboardView({ inquiries }) {
   const searchParams = useSearchParams()
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [view, setView] = useState(searchParams.get('view') || 'list') // 'list' | 'calendar'
+  const [view, setView] = useState(searchParams.get('view') || 'list')
 
   const filtered = inquiries.filter((inquiry) => {
     const matchesStatus = statusFilter === 'all' || inquiry.status === statusFilter
@@ -30,7 +38,6 @@ export default function DashboardView({ inquiries }) {
 
   return (
     <div>
-      {/* View toggle + Add Inquiry — stacked on mobile, side by side from sm breakpoint up */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div className="flex gap-2">
           <button
@@ -53,13 +60,12 @@ export default function DashboardView({ inquiries }) {
 
         <Link
           href="/dashboard/new"
-          className="bg-champagne text-ivory px-4 py-2 rounded font-sans text-sm text-center"
+          className="bg-inquiry-cta text-ivory px-4 py-2 rounded font-sans text-sm text-center"
         >
           + Add Inquiry
         </Link>
       </div>
 
-      {/* Search + filter — shared by both views */}
       <div className="flex flex-col gap-3 mb-6">
         <input
           type="text"
@@ -86,24 +92,26 @@ export default function DashboardView({ inquiries }) {
         </div>
       </div>
 
-      {/* List view */}
       {view === 'list' && (
         <div className="flex flex-col gap-3">
           {filtered.map((inquiry) => (
             <Link
               key={inquiry.id}
               href={`/dashboard/${inquiry.id}?returnView=list`}
-              className="border border-taupe/50 rounded-lg p-4 flex items-center justify-between bg-white/40 hover:bg-white/70 transition"
+              className="flex items-stretch gap-3 border border-taupe/50 rounded-lg bg-white/40 hover:bg-white/70 transition shadow-sm"
             >
-              <div>
-                <p className="font-serif text-lg text-charcoal">
-                  {inquiry.first_name} {inquiry.last_name}
-                </p>
-                <p className="font-sans text-sm text-taupe">
-                  {inquiry.event_type} · {inquiry.event_date}
-                </p>
+              <div className="w-1.5 rounded-l-lg" style={{ backgroundColor: STATUS_COLORS[inquiry.status] }} />
+              <div className="flex-1 flex items-center justify-between p-4">
+                <div>
+                  <p className="font-serif text-lg text-charcoal">
+                    {inquiry.first_name} {inquiry.last_name}
+                  </p>
+                  <p className="font-sans text-sm text-taupe">
+                    {inquiry.event_type} · {inquiry.event_date}
+                  </p>
+                </div>
+                <StatusPill status={inquiry.status} />
               </div>
-              <StatusPill status={inquiry.status} />
             </Link>
           ))}
 
@@ -113,7 +121,6 @@ export default function DashboardView({ inquiries }) {
         </div>
       )}
 
-      {/* Calendar view */}
       {view === 'calendar' && <Calendar inquiries={filtered} />}
     </div>
   )

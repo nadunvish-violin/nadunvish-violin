@@ -28,35 +28,39 @@ export default function StatusActions({ inquiry }) {
   }
 
   if (inquiry.status === 'new') {
-    if (activeForm === 'contact') {
-      return (
-        <form onSubmit={markContacted} className="flex flex-col gap-3 max-w-sm">
-          <label className="font-sans text-sm text-charcoal">
-            Event time
-            <input
-              type="time"
-              required
-              value={eventTime}
-              onChange={(e) => setEventTime(e.target.value)}
-              className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"
-            />
-          </label>
-          <div className="flex gap-3">
-            <button type="submit" disabled={loading} className="bg-champagne text-ivory px-6 py-2 rounded font-sans disabled:opacity-50">
-              {loading ? 'Saving...' : 'Confirm'}
-            </button>
-            <button type="button" onClick={() => setActiveForm(null)} className="border border-taupe text-charcoal px-6 py-2 rounded font-sans">
-              Back
-            </button>
-          </div>
-        </form>
-      )
-    }
-
     return (
-      <button onClick={() => setActiveForm('contact')} className="bg-champagne text-ivory px-6 py-2 rounded font-sans">
-        Mark as Contacted
-      </button>
+      <div>
+        <div className="rounded-lg p-3 mb-4" style={{ background: 'linear-gradient(135deg, rgba(252,192,85,0.25), transparent)' }}>
+          <p className="font-sans text-xs text-charcoal uppercase tracking-wide">Currently: New</p>
+        </div>
+
+        {activeForm === 'contact' ? (
+          <form onSubmit={markContacted} className="flex flex-col gap-3 max-w-sm">
+            <label className="font-sans text-sm text-charcoal">
+              Event time
+              <input
+                type="time"
+                required
+                value={eventTime}
+                onChange={(e) => setEventTime(e.target.value)}
+                className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"
+              />
+            </label>
+            <div className="flex gap-3">
+              <button type="submit" disabled={loading} className="bg-champagne text-ivory px-6 py-2 rounded font-sans disabled:opacity-50">
+                {loading ? 'Saving...' : 'Confirm'}
+              </button>
+              <button type="button" onClick={() => setActiveForm(null)} className="border border-taupe text-charcoal px-6 py-2 rounded font-sans">
+                Back
+              </button>
+            </div>
+          </form>
+        ) : (
+          <button onClick={() => setActiveForm('contact')} className="bg-champagne text-ivory px-6 py-2 rounded font-sans">
+            Mark as Contacted
+          </button>
+        )}
+      </div>
     )
   }
 

@@ -95,6 +95,10 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
 
   return (
     <div className="flex flex-col gap-4 max-w-md">
+      <div className="rounded-lg p-3" style={{ background: 'linear-gradient(135deg, rgba(150,131,236,0.2), transparent)' }}>
+        <p className="font-sans text-xs text-charcoal uppercase tracking-wide">Currently: Contacted</p>
+      </div>
+
       {quotations.length > 0 && (
         <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
           <p className="font-sans text-sm text-charcoal">

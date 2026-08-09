@@ -59,6 +59,10 @@ export default function ConfirmedPanel({ inquiry, invoices }) {
 
   return (
     <div className="flex flex-col gap-4 max-w-md">
+      <div className="rounded-lg p-3" style={{ background: 'linear-gradient(135deg, rgba(35,170,143,0.2), transparent)' }}>
+        <p className="font-sans text-xs text-charcoal uppercase tracking-wide">Currently: Confirmed</p>
+      </div>
+
       {invoices.length > 0 && (
         <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
           <p className="font-sans text-sm text-charcoal">
