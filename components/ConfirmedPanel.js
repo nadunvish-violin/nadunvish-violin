@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import CancelForm from '@/components/CancelForm'
 
-export default function ConfirmedPanel({ inquiry }) {
+export default function ConfirmedPanel({ inquiry, invoices }) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -19,6 +19,8 @@ export default function ConfirmedPanel({ inquiry }) {
 
   const today = new Date().toISOString().split('T')[0]
   const canComplete = !!inquiry.full_payment_date && inquiry.event_date <= today
+
+  const latestInvoice = invoices[0]
 
   async function saveFullPaymentDate() {
     setSaving(true)
@@ -57,6 +59,20 @@ export default function ConfirmedPanel({ inquiry }) {
 
   return (
     <div className="flex flex-col gap-4 max-w-md">
+      {invoices.length > 0 && (
+        <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
+          <p className="font-sans text-sm text-charcoal">
+            {invoices.length} {invoices.length === 1 ? 'invoice' : 'invoices'} generated
+          </p>
+          <p className="font-sans text-xs text-taupe">
+            Latest: NV-INV-{String(latestInvoice.sequence_number).padStart(5, '0')} · Balance LKR {Number(latestInvoice.balance).toLocaleString()}
+          </p>
+          <Link href={`/dashboard/${inquiry.id}/invoice`} className="font-sans text-xs text-champagne underline">
+            View full history
+          </Link>
+        </div>
+      )}
+
       <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
         <p className="font-sans text-sm text-taupe">Due payment</p>
         <p className="font-serif text-2xl text-charcoal">LKR {duePayment.toLocaleString()}</p>
@@ -65,10 +81,6 @@ export default function ConfirmedPanel({ inquiry }) {
       {paidInFull && (
         <p className="font-sans text-sm text-champagne">Paid in full at booking.</p>
       )}
-
-      <p className="font-sans text-sm text-charcoal">
-        Invoice generated: {inquiry.invoice_generated ? 'Yes' : 'Not yet'}
-      </p>
 
       <label className="font-sans text-sm text-charcoal">
         Full payment date

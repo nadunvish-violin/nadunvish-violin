@@ -48,12 +48,25 @@ export default async function InquiryDetailPage({ params, searchParams }) {
   }
 
   let packages = []
+  let quotations = []
+  let invoices = []
+
   if (inquiry.status === 'contacted') {
-    const { data } = await supabase
-      .from('packages')
+    const [{ data: pkgData }, { data: quotData }] = await Promise.all([
+      supabase.from('packages').select('*').order('created_at', { ascending: false }),
+      supabase.from('quotations').select('*').eq('inquiry_id', id).order('created_at', { ascending: false }),
+    ])
+    packages = pkgData || []
+    quotations = quotData || []
+  }
+
+  if (inquiry.status === 'confirmed' || inquiry.status === 'completed') {
+    const { data: invData } = await supabase
+      .from('invoices')
       .select('*')
+      .eq('inquiry_id', id)
       .order('created_at', { ascending: false })
-    packages = data || []
+    invoices = invData || []
   }
 
   return (
@@ -86,9 +99,9 @@ export default async function InquiryDetailPage({ params, searchParams }) {
         )}
       </div>
 
-      {inquiry.status === 'contacted' && <ContactedPanel inquiry={inquiry} packages={packages} />}
-      {inquiry.status === 'confirmed' && <ConfirmedPanel inquiry={inquiry} />}
-      {inquiry.status === 'completed' && <CompletedPanel inquiry={inquiry} />}
+      {inquiry.status === 'contacted' && <ContactedPanel inquiry={inquiry} packages={packages} quotations={quotations} />}
+      {inquiry.status === 'confirmed' && <ConfirmedPanel inquiry={inquiry} invoices={invoices} />}
+      {inquiry.status === 'completed' && <CompletedPanel inquiry={inquiry} invoices={invoices} />}
       {!['contacted', 'confirmed', 'completed'].includes(inquiry.status) && <StatusActions inquiry={inquiry} />}
     </div>
   )

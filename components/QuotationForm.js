@@ -134,7 +134,7 @@ export default function QuotationForm({ inquiry, packages, banks, pastQuotations
     }
 
     downloadPDF(pdfBytes, `${quotationNumber}.pdf`)
-    router.refresh()
+    router.push(`/dashboard/${inquiry.id}`)
   }
 
   async function handleRedownload(q) {

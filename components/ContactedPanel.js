@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import CancelForm from '@/components/CancelForm'
 
-export default function ContactedPanel({ inquiry, packages }) {
+export default function ContactedPanel({ inquiry, packages, quotations }) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -85,9 +86,24 @@ export default function ContactedPanel({ inquiry, packages }) {
 
   const canGenerateQuotation = packageType !== '' && totalPrice !== ''
   const canMoveToConfirmed = inquiry.quotation_generated && advanceAmount !== '' && Number(advanceAmount) > 0
+  const latestQuotation = quotations[0]
 
   return (
     <div className="flex flex-col gap-4 max-w-md">
+      {quotations.length > 0 && (
+        <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
+          <p className="font-sans text-sm text-charcoal">
+            {quotations.length} {quotations.length === 1 ? 'quotation' : 'quotations'} generated
+          </p>
+          <p className="font-sans text-xs text-taupe">
+            Latest: NV-QTN-{String(latestQuotation.sequence_number).padStart(5, '0')} · LKR {Number(latestQuotation.total_price).toLocaleString()}
+          </p>
+          <Link href={`/dashboard/${inquiry.id}/quotation`} className="font-sans text-xs text-champagne underline">
+            View full history
+          </Link>
+        </div>
+      )}
+
       <label className="font-sans text-sm text-charcoal">
         Package
         <select
@@ -108,9 +124,13 @@ export default function ContactedPanel({ inquiry, packages }) {
           type="number"
           step="0.01"
           value={totalPrice}
+          disabled={!packageType}
           onChange={(e) => setTotalPrice(e.target.value)}
-          className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"
+          className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1 disabled:opacity-50 disabled:bg-taupe/10"
         />
+        {!packageType && (
+          <span className="text-xs text-taupe">Select a package first</span>
+        )}
       </label>
 
       <label className="font-sans text-sm text-charcoal">
