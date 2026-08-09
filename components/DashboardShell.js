@@ -6,6 +6,8 @@ import NotificationBell from '@/components/NotificationBell'
 import { createClient } from '@/lib/supabase/client'
 
 const IDLE_TIMEOUT_MS = 15 * 60 * 1000
+const CHECK_INTERVAL_MS = 30 * 1000
+const ACTIVITY_KEY = 'lastActivity'
 
 export default function DashboardShell({ children, notifications }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -33,23 +35,27 @@ export default function DashboardShell({ children, notifications }) {
 
   useEffect(() => {
     const supabase = createClient()
-    let idleTimer
 
-    function resetIdleTimer() {
-      clearTimeout(idleTimer)
-      idleTimer = setTimeout(async () => {
-        await supabase.auth.signOut()
-        window.location.href = '/login'
-      }, IDLE_TIMEOUT_MS)
+    function recordActivity() {
+      localStorage.setItem(ACTIVITY_KEY, Date.now().toString())
     }
 
+    recordActivity()
+
     const activityEvents = ['mousedown', 'touchstart', 'keydown', 'scroll']
-    activityEvents.forEach((event) => window.addEventListener(event, resetIdleTimer))
-    resetIdleTimer()
+    activityEvents.forEach((event) => window.addEventListener(event, recordActivity, { passive: true }))
+
+    const checkInterval = setInterval(async () => {
+      const last = Number(localStorage.getItem(ACTIVITY_KEY) || Date.now())
+      if (Date.now() - last >= IDLE_TIMEOUT_MS) {
+        await supabase.auth.signOut()
+        window.location.href = '/login'
+      }
+    }, CHECK_INTERVAL_MS)
 
     return () => {
-      clearTimeout(idleTimer)
-      activityEvents.forEach((event) => window.removeEventListener(event, resetIdleTimer))
+      clearInterval(checkInterval)
+      activityEvents.forEach((event) => window.removeEventListener(event, recordActivity))
     }
   }, [])
 

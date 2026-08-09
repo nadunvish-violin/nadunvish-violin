@@ -4,25 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateQuotationPDF } from '@/lib/generateQuotationPDF'
-
-function formatTime(timeString) {
-  if (!timeString) return ''
-  const [hours, minutes] = timeString.split(':')
-  const h = parseInt(hours, 10)
-  const period = h >= 12 ? 'PM' : 'AM'
-  const displayHour = h % 12 === 0 ? 12 : h % 12
-  return `${displayHour}:${minutes} ${period}`
-}
-
-function downloadPDF(bytes, filename) {
-  const blob = new Blob([bytes], { type: 'application/pdf' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  link.click()
-  URL.revokeObjectURL(url)
-}
+import { downloadPDF } from '@/lib/downloadPDF'
+import { formatEventTime } from '@/lib/formatEventTime'
 
 export default function QuotationForm({ inquiry, packages, banks, pastQuotations }) {
   const router = useRouter()
@@ -84,7 +67,7 @@ export default function QuotationForm({ inquiry, packages, banks, pastQuotations
       lastName,
       eventDate,
       venue,
-      eventTime: formatTime(eventTime),
+      eventTime: formatEventTime(eventTime),
       phone,
       packageDetails: packageType,
       packagePrice: Number(packagePrice),
@@ -134,7 +117,7 @@ export default function QuotationForm({ inquiry, packages, banks, pastQuotations
     }
 
     downloadPDF(pdfBytes, `${quotationNumber}.pdf`)
-    router.push(`/dashboard/${inquiry.id}`)
+    router.replace(`/dashboard/${inquiry.id}`)
   }
 
   async function handleRedownload(q) {
@@ -146,7 +129,7 @@ export default function QuotationForm({ inquiry, packages, banks, pastQuotations
       lastName: q.last_name,
       eventDate: q.event_date,
       venue: q.venue,
-      eventTime: formatTime(q.event_time),
+      eventTime: formatEventTime(q.event_time),
       phone: q.phone,
       packageDetails: q.package_details,
       packagePrice: Number(q.package_price),

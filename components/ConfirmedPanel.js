@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import CancelForm from '@/components/CancelForm'
+import { generateInvoicePDF } from '@/lib/generateInvoicePDF'
+import { downloadPDF } from '@/lib/downloadPDF'
+import { formatEventTime } from '@/lib/formatEventTime'
 
 export default function ConfirmedPanel({ inquiry, invoices }) {
   const router = useRouter()
@@ -53,6 +56,28 @@ export default function ConfirmedPanel({ inquiry, invoices }) {
     router.refresh()
   }
 
+  async function handleDownloadLatest() {
+    const inv = invoices[0]
+    const number = `NV-INV-${String(inv.sequence_number).padStart(5, '0')}`
+    const pdfBytes = await generateInvoicePDF({
+      invoiceNumber: number,
+      invoiceDate: inv.invoice_date,
+      firstName: inv.first_name,
+      lastName: inv.last_name,
+      eventDate: inv.event_date,
+      venue: inv.venue,
+      eventTime: formatEventTime(inv.event_time),
+      phone: inv.phone,
+      packageDetails: inv.package_details,
+      packagePrice: Number(inv.package_price),
+      discount: Number(inv.discount),
+      advancePayment: Number(inv.advance_payment_amount),
+      balance: Number(inv.balance),
+      banksShown: inv.banks_shown || [],
+    })
+    downloadPDF(pdfBytes, `${number}.pdf`)
+  }
+
   if (showCancel) {
     return <CancelForm inquiry={inquiry} onBack={() => setShowCancel(false)} />
   }
@@ -68,12 +93,17 @@ export default function ConfirmedPanel({ inquiry, invoices }) {
           <p className="font-sans text-sm text-charcoal">
             {invoices.length} {invoices.length === 1 ? 'invoice' : 'invoices'} generated
           </p>
-          <p className="font-sans text-xs text-taupe">
+          <p className="font-sans text-xs text-taupe mb-2">
             Latest: NV-INV-{String(latestInvoice.sequence_number).padStart(5, '0')} · Balance LKR {Number(latestInvoice.balance).toLocaleString()}
           </p>
-          <Link href={`/dashboard/${inquiry.id}/invoice`} className="font-sans text-xs text-champagne underline">
-            View full history
-          </Link>
+          <div className="flex gap-3">
+            <button onClick={handleDownloadLatest} className="border border-champagne text-champagne px-3 py-1 rounded font-sans text-xs">
+              Download Latest
+            </button>
+            <Link href={`/dashboard/${inquiry.id}/invoice`} className="font-sans text-xs text-champagne underline self-center">
+              View full history
+            </Link>
+          </div>
         </div>
       )}
 

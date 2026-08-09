@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import CancelForm from '@/components/CancelForm'
+import { generateQuotationPDF } from '@/lib/generateQuotationPDF'
+import { downloadPDF } from '@/lib/downloadPDF'
+import { formatEventTime } from '@/lib/formatEventTime'
 
 export default function ContactedPanel({ inquiry, packages, quotations }) {
   const router = useRouter()
@@ -27,14 +30,7 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
     }
   }
 
-  async function saveChanges() {
-    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
-      alert('Please set the advance payment date before saving.')
-      return
-    }
-
-    setSaving(true)
-
+  function buildFields() {
     const fields = {
       package_type: packageType || null,
       total_price: totalPrice === '' ? null : Number(totalPrice),
@@ -51,30 +47,48 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
       fields.full_payment_date = advanceDate || null
     }
 
+    return fields
+  }
+
+  async function saveChanges() {
+    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
+      alert('Please set the advance payment date before saving.')
+      return false
+    }
+
+    setSaving(true)
+
     const { error } = await supabase
       .from('inquiries')
-      .update(fields)
+      .update(buildFields())
       .eq('id', inquiry.id)
 
     setSaving(false)
 
     if (error) {
       alert('Something went wrong: ' + error.message)
-      return
+      return false
     }
 
     router.refresh()
+    return true
   }
 
   async function handleGenerateQuotation() {
-    await saveChanges()
+    const success = await saveChanges()
+    if (!success) return
     router.push(`/dashboard/${inquiry.id}/quotation`)
   }
 
   async function handleMoveToConfirmed() {
+    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
+      alert('Please set the advance payment date before continuing.')
+      return
+    }
+
     const { error } = await supabase
       .from('inquiries')
-      .update({ status: 'confirmed' })
+      .update({ ...buildFields(), status: 'confirmed' })
       .eq('id', inquiry.id)
 
     if (error) {
@@ -83,6 +97,27 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
     }
 
     router.refresh()
+  }
+
+  async function handleDownloadLatest() {
+    const q = quotations[0]
+    const number = `NV-QTN-${String(q.sequence_number).padStart(5, '0')}`
+    const pdfBytes = await generateQuotationPDF({
+      quotationNumber: number,
+      quotationDate: q.quotation_date,
+      firstName: q.first_name,
+      lastName: q.last_name,
+      eventDate: q.event_date,
+      venue: q.venue,
+      eventTime: formatEventTime(q.event_time),
+      phone: q.phone,
+      packageDetails: q.package_details,
+      packagePrice: Number(q.package_price),
+      discount: Number(q.discount),
+      totalPrice: Number(q.total_price),
+      banksShown: q.banks_shown || [],
+    })
+    downloadPDF(pdfBytes, `${number}.pdf`)
   }
 
   if (showCancel) {
@@ -93,23 +128,42 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
   const canMoveToConfirmed = inquiry.quotation_generated && advanceAmount !== '' && Number(advanceAmount) > 0
   const latestQuotation = quotations[0]
 
+  const stalledDays = (() => {
+    if (!inquiry.quotation_generated || inquiry.advance_payment_amount || quotations.length === 0) return null
+    const quotedAt = new Date(quotations[0].created_at)
+    return Math.floor((Date.now() - quotedAt.getTime()) / (1000 * 60 * 60 * 24))
+  })()
+
   return (
     <div className="flex flex-col gap-4 max-w-md">
       <div className="rounded-lg p-3" style={{ background: 'linear-gradient(135deg, rgba(150,131,236,0.2), transparent)' }}>
         <p className="font-sans text-xs text-charcoal uppercase tracking-wide">Currently: Contacted</p>
       </div>
 
+      {stalledDays !== null && stalledDays >= 3 && (
+        <div className="rounded-lg p-3 border border-red-600/40 bg-red-50">
+          <p className="font-sans text-sm text-red-700">
+            Quotation sent {stalledDays} days ago — no advance payment yet. Consider following up.
+          </p>
+        </div>
+      )}
+
       {quotations.length > 0 && (
         <div className="border border-taupe/50 rounded-lg p-4 bg-white/40">
           <p className="font-sans text-sm text-charcoal">
             {quotations.length} {quotations.length === 1 ? 'quotation' : 'quotations'} generated
           </p>
-          <p className="font-sans text-xs text-taupe">
+          <p className="font-sans text-xs text-taupe mb-2">
             Latest: NV-QTN-{String(latestQuotation.sequence_number).padStart(5, '0')} · LKR {Number(latestQuotation.total_price).toLocaleString()}
           </p>
-          <Link href={`/dashboard/${inquiry.id}/quotation`} className="font-sans text-xs text-champagne underline">
-            View full history
-          </Link>
+          <div className="flex gap-3">
+            <button onClick={handleDownloadLatest} className="border border-champagne text-champagne px-3 py-1 rounded font-sans text-xs">
+              Download Latest
+            </button>
+            <Link href={`/dashboard/${inquiry.id}/quotation`} className="font-sans text-xs text-champagne underline self-center">
+              View full history
+            </Link>
+          </div>
         </div>
       )}
 

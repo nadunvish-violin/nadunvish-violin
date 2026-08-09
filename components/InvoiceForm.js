@@ -4,25 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { generateInvoicePDF } from '@/lib/generateInvoicePDF'
-
-function formatTime(timeString) {
-  if (!timeString) return ''
-  const [hours, minutes] = timeString.split(':')
-  const h = parseInt(hours, 10)
-  const period = h >= 12 ? 'PM' : 'AM'
-  const displayHour = h % 12 === 0 ? 12 : h % 12
-  return `${displayHour}:${minutes} ${period}`
-}
-
-function downloadPDF(bytes, filename) {
-  const blob = new Blob([bytes], { type: 'application/pdf' })
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = filename
-  link.click()
-  URL.revokeObjectURL(url)
-}
+import { downloadPDF } from '@/lib/downloadPDF'
+import { formatEventTime } from '@/lib/formatEventTime'
 
 export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoices }) {
   const router = useRouter()
@@ -87,7 +70,7 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
       lastName,
       eventDate,
       venue,
-      eventTime: formatTime(eventTime),
+      eventTime: formatEventTime(eventTime),
       phone,
       packageDetails,
       packagePrice: Number(packagePrice),
@@ -135,7 +118,7 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
     }
 
     downloadPDF(pdfBytes, `${invoiceNumber}.pdf`)
-    router.push(`/dashboard/${inquiry.id}`)
+    router.replace(`/dashboard/${inquiry.id}`)
   }
 
   async function handleRedownload(inv) {
@@ -147,7 +130,7 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
       lastName: inv.last_name,
       eventDate: inv.event_date,
       venue: inv.venue,
-      eventTime: formatTime(inv.event_time),
+      eventTime: formatEventTime(inv.event_time),
       phone: inv.phone,
       packageDetails: inv.package_details,
       packagePrice: Number(inv.package_price),
