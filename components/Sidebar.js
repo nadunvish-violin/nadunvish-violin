@@ -7,6 +7,7 @@ import LogoutButton from '@/components/LogoutButton'
 export default function Sidebar({ isOpen, onClose }) {
   const [packagesOpen, setPackagesOpen] = useState(false)
   const [banksOpen, setBanksOpen] = useState(false)
+  const [reportsOpen, setReportsOpen] = useState(false)
 
   if (!isOpen) return null
 
@@ -97,14 +98,28 @@ export default function Sidebar({ isOpen, onClose }) {
 
           <div className="border-t border-taupe/30 my-2" />
 
-          <Link href="/dashboard/reports" onClick={onClose} className="flex items-center gap-2 px-3 py-2 rounded hover:bg-taupe/20">
+          <button
+            onClick={() => setReportsOpen(!reportsOpen)}
+            className="flex items-center gap-2 text-left px-3 py-2 rounded hover:bg-taupe/20"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <line x1="12" y1="20" x2="12" y2="10" />
               <line x1="18" y1="20" x2="18" y2="4" />
               <line x1="6" y1="20" x2="6" y2="16" />
             </svg>
-            Payment Reports
-          </Link>
+            Reports
+          </button>
+          {reportsOpen && (
+            <div className="flex flex-col pl-8">
+              <Link href="/dashboard/reports/payments" onClick={onClose} className="px-3 py-2 rounded hover:bg-taupe/20 text-sm">
+                Payments
+              </Link>
+              <Link href="/dashboard/reports/events" onClick={onClose} className="px-3 py-2 rounded hover:bg-taupe/20 text-sm">
+                Events
+              </Link>
+            </div>
+          )}
+
           <Link href="/dashboard/change-password" onClick={onClose} className="flex items-center gap-2 px-3 py-2 rounded hover:bg-taupe/20">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" />

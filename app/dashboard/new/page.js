@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { normalizePhone } from '@/lib/formatPhone'
 
+const EVENT_TYPES = ['Wedding', 'Concert', 'Corporate Event', 'Private Party', 'Other']
+
 export default function NewInquiryPage() {
   const router = useRouter()
   const supabase = createClient()
@@ -117,15 +119,21 @@ export default function NewInquiryPage() {
 
         <label className="font-sans text-sm text-charcoal">
           Event type
-          <input
-            type="text"
+          <select
             required
-            placeholder="e.g. Wedding, Corporate Event, Birthday Party"
             value={eventType}
             onChange={(e) => setEventType(e.target.value)}
             className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"
-          />
+          >
+            <option value="" disabled>Select event type</option>
+            {EVENT_TYPES.map((type) => (
+              <option key={type} value={type}>{type}</option>
+            ))}
+          </select>
         </label>
+        {eventType === 'Other' && (
+          <p className="font-sans text-xs text-taupe -mt-2">Please describe in the message field below.</p>
+        )}
 
         <label className="font-sans text-sm text-charcoal">
           Event date
