@@ -8,7 +8,7 @@ export default async function DashboardLayout({ children }) {
   const sevenDaysFromNow = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
 
   const [{ data: newInquiries }, { data: upcomingEvents }, { data: stalledCandidates }] = await Promise.all([
-    supabase.from('inquiries').select('id, first_name, last_name').eq('status', 'new').order('created_at', { ascending: false }),
+    supabase.from('inquiries').select('id, first_name, last_name, event_type, event_date').eq('status', 'new').order('created_at', { ascending: false }),
     supabase.from('inquiries').select('id, first_name, last_name, event_date').eq('status', 'confirmed').gte('event_date', today).lte('event_date', sevenDaysFromNow).order('event_date', { ascending: true }),
     supabase.from('inquiries').select('id, first_name, last_name').eq('status', 'contacted').eq('quotation_generated', true).is('advance_payment_amount', null),
   ])

@@ -31,15 +31,16 @@ export const metadata = {
 
 export const viewport = {
   themeColor: '#2B2A28',
+  colorScheme: 'light',
 }
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
       <body className="bg-ivory text-charcoal font-sans">
-  <ServiceWorkerRegister />
-  {children}
-</body>
+        <ServiceWorkerRegister />
+        {children}
+      </body>
     </html>
   )
 }

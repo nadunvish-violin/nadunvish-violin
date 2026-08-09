@@ -1,18 +1,35 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function NotificationBell({ notifications }) {
   const [open, setOpen] = useState(false)
+  const containerRef = useRef(null)
 
   const totalCount =
     notifications.newInquiries.length +
     notifications.upcomingEvents.length +
     notifications.stalledQuotations.length
 
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    if (open) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [open])
+
   return (
-    <div className="relative ml-auto">
+    <div className="relative ml-auto" ref={containerRef}>
       <button onClick={() => setOpen(!open)} aria-label="Notifications" className="relative text-charcoal">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -38,6 +55,9 @@ export default function NotificationBell({ notifications }) {
                 {notifications.newInquiries.map((inq) => (
                   <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-sm text-charcoal hover:text-champagne">
                     {inq.first_name} {inq.last_name}
+                    <span className="block text-xs text-taupe">
+                      {inq.event_type || 'Event type not set'} · {inq.event_date || 'Date not set'}
+                    </span>
                   </Link>
                 ))}
               </div>

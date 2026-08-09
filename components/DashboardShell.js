@@ -3,6 +3,9 @@
 import { useState, useEffect, useRef } from 'react'
 import Sidebar from '@/components/Sidebar'
 import NotificationBell from '@/components/NotificationBell'
+import { createClient } from '@/lib/supabase/client'
+
+const IDLE_TIMEOUT_MS = 15 * 60 * 1000
 
 export default function DashboardShell({ children, notifications }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -26,6 +29,28 @@ export default function DashboardShell({ children, notifications }) {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    const supabase = createClient()
+    let idleTimer
+
+    function resetIdleTimer() {
+      clearTimeout(idleTimer)
+      idleTimer = setTimeout(async () => {
+        await supabase.auth.signOut()
+        window.location.href = '/login'
+      }, IDLE_TIMEOUT_MS)
+    }
+
+    const activityEvents = ['mousedown', 'touchstart', 'keydown', 'scroll']
+    activityEvents.forEach((event) => window.addEventListener(event, resetIdleTimer))
+    resetIdleTimer()
+
+    return () => {
+      clearTimeout(idleTimer)
+      activityEvents.forEach((event) => window.removeEventListener(event, resetIdleTimer))
+    }
   }, [])
 
   return (
