@@ -30,14 +30,14 @@ export default function UpcomingEvents({ events }) {
           <p className="font-sans text-taupe text-sm">Nothing confirmed yet.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex gap-3 overflow-x-auto pb-2">
           {events.map((event) => {
             const color = EVENT_TYPE_COLORS[event.event_type] || EVENT_TYPE_COLORS.Other
             return (
               <Link
                 key={event.id}
                 href={`/dashboard/${event.id}`}
-                className="flex items-stretch gap-3 border border-champagne/40 rounded-lg p-4 bg-white/40 hover:bg-white/70 transition"
+                className="flex items-stretch gap-3 border border-champagne/40 rounded-lg p-4 bg-white/40 hover:bg-white/70 transition min-w-[260px] w-[260px] shrink-0"
               >
                 <div className="w-1.5 rounded-full" style={{ backgroundColor: color }} />
                 <div className="flex-1">

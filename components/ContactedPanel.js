@@ -30,6 +30,24 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
     }
   }
 
+  function maxAdvance() {
+    const total = totalPrice === '' ? 0 : Number(totalPrice)
+    const disc = discount === '' ? 0 : Number(discount)
+    return total - disc
+  }
+
+  function validate() {
+    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
+      alert('Please set the advance payment date before saving.')
+      return false
+    }
+    if (advanceAmount !== '' && Number(advanceAmount) > maxAdvance()) {
+      alert('Advance payment cannot exceed the total price minus discount.')
+      return false
+    }
+    return true
+  }
+
   function buildFields() {
     const fields = {
       package_type: packageType || null,
@@ -51,10 +69,7 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
   }
 
   async function saveChanges() {
-    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
-      alert('Please set the advance payment date before saving.')
-      return false
-    }
+    if (!validate()) return false
 
     setSaving(true)
 
@@ -81,10 +96,7 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
   }
 
   async function handleMoveToConfirmed() {
-    if (advanceAmount !== '' && Number(advanceAmount) > 0 && !advanceDate) {
-      alert('Please set the advance payment date before continuing.')
-      return
-    }
+    if (!validate()) return
 
     const { error } = await supabase
       .from('inquiries')
@@ -96,6 +108,7 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
       return
     }
 
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     router.refresh()
   }
 
@@ -212,6 +225,7 @@ export default function ContactedPanel({ inquiry, packages, quotations }) {
         <input
           type="number"
           step="0.01"
+          max={maxAdvance()}
           value={advanceAmount}
           onChange={(e) => setAdvanceAmount(e.target.value)}
           className="border border-taupe rounded px-4 py-2 font-sans text-charcoal w-full mt-1"

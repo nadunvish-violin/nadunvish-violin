@@ -20,6 +20,12 @@ input, select, textarea {
   font-size: 16px;
 }
 
+input[type="date"],
+input[type="time"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 button.rounded, a.rounded {
   border-radius: 9999px;
 }

@@ -60,7 +60,7 @@ export default function DashboardShell({ children, notifications }) {
   }, [])
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen bg-ivory" style={{ backgroundImage: 'radial-gradient(circle at top, rgba(184,147,95,0.08), transparent 60%)' }}>
       <header
         className={`fixed top-0 left-0 right-0 z-40 flex items-center gap-4 px-6 py-4 border-b border-taupe/30 bg-ivory transition-transform duration-300 ${
           headerVisible ? 'translate-y-0' : '-translate-y-full'

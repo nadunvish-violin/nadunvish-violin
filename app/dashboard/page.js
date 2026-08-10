@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import DashboardView from '@/components/DashboardView'
 import UpcomingEvents from '@/components/UpcomingEvents'
+import Greeting from '@/components/Greeting'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -22,7 +23,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-3xl font-serif text-charcoal mb-2">Dashboard</h1>
+      <Greeting />
       <p className="font-sans text-taupe text-sm mb-6">
         Logged in as: {user?.email}
       </p>

@@ -38,35 +38,39 @@ export default function DashboardView({ inquiries }) {
 
   return (
     <div>
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
-        <div className="flex gap-2">
-          <button
-            onClick={() => setView('list')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded font-sans text-sm ${
-              view === 'list' ? 'bg-champagne text-ivory' : 'border border-taupe text-charcoal'
-            }`}
-          >
-            List View
-          </button>
-          <button
-            onClick={() => setView('calendar')}
-            className={`flex-1 sm:flex-none px-4 py-2 rounded font-sans text-sm ${
-              view === 'calendar' ? 'bg-champagne text-ivory' : 'border border-taupe text-charcoal'
-            }`}
-          >
-            Calendar View
-          </button>
-        </div>
+      <h2 className="font-serif text-xl text-charcoal mb-3">Inquiries</h2>
 
-        <Link
-          href="/dashboard/new"
-          className="bg-inquiry-cta text-ivory px-4 py-2 rounded font-sans text-sm text-center"
-        >
-          + Add Inquiry
-        </Link>
+      <div className="sticky top-24 z-30 bg-ivory pb-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-2">
+            <button
+              onClick={() => setView('list')}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded font-sans text-sm ${
+                view === 'list' ? 'bg-champagne text-ivory' : 'border border-taupe text-charcoal'
+              }`}
+            >
+              List View
+            </button>
+            <button
+              onClick={() => setView('calendar')}
+              className={`flex-1 sm:flex-none px-4 py-2 rounded font-sans text-sm ${
+                view === 'calendar' ? 'bg-champagne text-ivory' : 'border border-taupe text-charcoal'
+              }`}
+            >
+              Calendar View
+            </button>
+          </div>
+
+          <Link
+            href="/dashboard/new"
+            className="bg-inquiry-cta text-ivory px-4 py-2 rounded font-sans text-sm text-center"
+          >
+            + Add Inquiry
+          </Link>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-3 mb-6">
+      <div className="flex flex-col gap-3 mb-6 mt-3">
         <input
           type="text"
           placeholder="Search by name, email, phone, or venue..."

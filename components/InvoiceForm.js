@@ -42,6 +42,7 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
   const [error, setError] = useState(null)
 
   const balance = Number(packagePrice || 0) - Number(discount || 0) - Number(advancePayment || 0)
+  const maxAdvance = Number(packagePrice || 0) - Number(discount || 0)
 
   function toggleBank(id) {
     setSelectedBankIds((prev) =>
@@ -54,6 +55,11 @@ export default function InvoiceForm({ inquiry, latestQuotation, banks, pastInvoi
 
     if (!latestQuotation) {
       setError('No quotation found for this inquiry — generate a quotation first.')
+      return
+    }
+
+    if (Number(advancePayment) > maxAdvance) {
+      setError('Payment received cannot exceed the package price minus discount.')
       return
     }
 

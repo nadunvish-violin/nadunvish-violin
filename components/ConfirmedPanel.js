@@ -53,6 +53,7 @@ export default function ConfirmedPanel({ inquiry, invoices }) {
       alert('Something went wrong: ' + error.message)
       return
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' })
     router.refresh()
   }
 

@@ -50,10 +50,10 @@ export default function NotificationBell({ notifications }) {
 
           {notifications.newInquiries.length > 0 && (
             <div>
-              <p className="font-sans text-xs text-taupe uppercase mb-1">New inquiries</p>
+              <p className="font-sans text-sm text-charcoal font-semibold uppercase mb-1">New inquiries</p>
               <div className="flex flex-col gap-1">
                 {notifications.newInquiries.map((inq) => (
-                  <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-sm text-charcoal hover:text-champagne">
+                  <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-base text-charcoal hover:text-champagne">
                     {inq.first_name} {inq.last_name}
                     <span className="block text-xs text-taupe">
                       {inq.event_type || 'Event type not set'} · {inq.event_date || 'Date not set'}
@@ -66,10 +66,10 @@ export default function NotificationBell({ notifications }) {
 
           {notifications.upcomingEvents.length > 0 && (
             <div>
-              <p className="font-sans text-xs text-taupe uppercase mb-1">Events this week</p>
+              <p className="font-sans text-sm text-charcoal font-semibold uppercase mb-1">Events this week</p>
               <div className="flex flex-col gap-1">
                 {notifications.upcomingEvents.map((inq) => (
-                  <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-sm text-charcoal hover:text-champagne">
+                  <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-base text-charcoal hover:text-champagne">
                     {inq.first_name} {inq.last_name} · {inq.event_date}
                   </Link>
                 ))}
@@ -79,10 +79,10 @@ export default function NotificationBell({ notifications }) {
 
           {notifications.stalledQuotations.length > 0 && (
             <div>
-              <p className="font-sans text-xs text-taupe uppercase mb-1">Stalled quotations</p>
+              <p className="font-sans text-sm text-charcoal font-semibold uppercase mb-1">Stalled quotations</p>
               <div className="flex flex-col gap-1">
                 {notifications.stalledQuotations.map((inq) => (
-                  <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-sm text-charcoal hover:text-champagne">
+                  <Link key={inq.id} href={`/dashboard/${inq.id}`} onClick={() => setOpen(false)} className="font-sans text-base text-charcoal hover:text-champagne">
                     {inq.first_name} {inq.last_name}
                   </Link>
                 ))}
