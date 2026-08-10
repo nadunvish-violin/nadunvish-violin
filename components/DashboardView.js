@@ -40,7 +40,7 @@ export default function DashboardView({ inquiries }) {
     <div>
       <h2 className="font-serif text-xl text-charcoal mb-3">Inquiries</h2>
 
-      <div className="sticky top-24 z-30 bg-ivory pb-3">
+      <div className="sticky top-28 z-30 bg-ivory pb-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-2">
             <button

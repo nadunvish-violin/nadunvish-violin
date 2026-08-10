@@ -1,12 +1,5 @@
 import Link from 'next/link'
-
-const EVENT_TYPE_COLORS = {
-  Wedding: '#B8935F',
-  Concert: '#4C5FD5',
-  'Corporate Event': '#5B8DBF',
-  'Private Party': '#E8748A',
-  Other: '#C9C2B4',
-}
+import { EVENT_TYPE_COLORS } from '@/lib/eventTypeColors'
 
 function daysUntil(dateString) {
   const eventDate = new Date(dateString)
@@ -40,18 +33,19 @@ export default function UpcomingEvents({ events }) {
                 className="flex items-stretch gap-3 border border-champagne/40 rounded-lg p-4 bg-white/40 hover:bg-white/70 transition min-w-[260px] w-[260px] shrink-0"
               >
                 <div className="w-1.5 rounded-full" style={{ backgroundColor: color }} />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-serif text-lg text-charcoal">{event.first_name} {event.last_name}</p>
-                    <span className="text-xs px-2 py-0.5 rounded-full text-ivory shrink-0" style={{ backgroundColor: color }}>
-                      {event.event_type}
-                    </span>
-                  </div>
+                <div className="flex-1 flex flex-col gap-1">
+                  <p className="font-serif text-lg text-charcoal">{event.first_name} {event.last_name}</p>
+                  <span className="text-xs px-2 py-0.5 rounded-full text-ivory self-start" style={{ backgroundColor: color }}>
+                    {event.event_type}
+                  </span>
                   <p className="font-sans text-sm font-semibold text-champagne">
                     {daysUntil(event.event_date)}
                   </p>
                   <p className="font-sans text-xs text-taupe">
-                    {event.venue} · {event.event_date}
+                    {event.venue}
+                  </p>
+                  <p className="font-sans text-xs text-taupe">
+                    {event.event_date}
                   </p>
                 </div>
               </Link>

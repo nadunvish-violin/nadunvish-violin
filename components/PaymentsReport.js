@@ -95,11 +95,11 @@ export default function PaymentsReport({ inquiries }) {
 
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="rounded-lg p-6 bg-status-confirmed flex-1">
-          <p className="font-sans text-sm text-ivory/80">Total revenue (selected period)</p>
+          <p className="font-sans text-sm text-ivory/80">Total revenue</p>
           <p className="font-serif text-3xl text-ivory">LKR {totalRevenue.toLocaleString()}</p>
         </div>
         <div className="rounded-lg p-6 bg-inquiry-cta flex-1">
-          <p className="font-sans text-sm text-ivory/80">Total due (current, all time)</p>
+          <p className="font-sans text-sm text-ivory/80">Total due</p>
           <p className="font-serif text-3xl text-ivory">LKR {totalDue.toLocaleString()}</p>
         </div>
       </div>

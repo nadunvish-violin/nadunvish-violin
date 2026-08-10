@@ -83,7 +83,7 @@ export default function DashboardShell({ children, notifications }) {
 
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      <main className="p-8 pt-24">
+      <main className="p-8 pt-28">
         {children}
       </main>
     </div>
