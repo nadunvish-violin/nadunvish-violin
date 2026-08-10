@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import StatusPill from '@/components/StatusPill'
 import Calendar from '@/components/Calendar'
+import { useHeaderVisibility } from '@/components/HeaderVisibilityContext'
 
 const STATUS_FILTERS = ['all', 'new', 'contacted', 'confirmed', 'completed', 'cancelled']
 
@@ -21,6 +22,7 @@ export default function DashboardView({ inquiries }) {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [view, setView] = useState(searchParams.get('view') || 'list')
+  const headerVisible = useHeaderVisibility()
 
   const filtered = inquiries.filter((inquiry) => {
     const matchesStatus = statusFilter === 'all' || inquiry.status === statusFilter
@@ -40,7 +42,10 @@ export default function DashboardView({ inquiries }) {
     <div>
       <h2 className="font-serif text-xl text-charcoal mb-3">Inquiries</h2>
 
-      <div className="sticky top-28 z-30 bg-ivory pb-3">
+      <div
+        className="sticky z-30 bg-ivory pb-3 transition-[top] duration-300"
+        style={{ top: headerVisible ? '64px' : '0px' }}
+      >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex gap-2">
             <button
